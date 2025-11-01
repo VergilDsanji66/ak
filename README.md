@@ -2,18 +2,18 @@
 
 ## Overview
 
-This repository ("ak") contains a small collection of tools, libraries, and example code for data analysis, signal processing, and small-system utilities. The project is language-agnostic and may include Python, C/C++, and JavaScript components; organize and extend it to suit your needs.
+This repository ("ak") contains a small collection of tools and example code focused on water-level monitoring and alerting. The primary purpose is to detect water levels from configured inputs and notify users via SMS and USSD.
 
 ## Key Features
 
-* Lightweight, modular utilities for data processing
-* Example scripts for preprocessing, feature extraction, and visualization
-* Optional native modules (C/C++) for performance-critical workloads
-* Tooling for model training, evaluation, and reporting
+* Water-level detection and monitoring pipeline (sensor or data feed ingestion)
+* SMS notifications using the Africa's Talking API (implementation lives in sms.py)
+* USSD handling to provide interactive options and send different messages based on user selection
+* Lightweight utilities and example scripts for preprocessing and analysis
 
 ## Suggested Repository Layout
 
-- src/                — core source code (Python, C/C++, etc.)
+- src/                — core source code (Python, optional C/C++)
 - scripts/            — utility scripts and helpers
 - data/               — sample input data and metadata
 - notebooks/          — exploratory Jupyter notebooks
@@ -22,10 +22,9 @@ This repository ("ak") contains a small collection of tools, libraries, and exam
 
 ## Prerequisites
 
-* Python 3.8+ (for analysis and tooling)
-* pip / virtualenv
-* C/C++ toolchain (gcc/clang/MSVC) if building native extensions
-* Node.js + npm (optional, for web visualizations)
+* Python 3.8+  
+* pip / virtualenv  
+* Node.js + npm (optional, only if you add web visualizations)
 
 ## Installation
 
@@ -45,60 +44,54 @@ source venv/bin/activate  # On Linux/macOS
 pip install -r requirements.txt
 ```
 
-3. Build native modules (if present)
+## Configuration
 
-```bash
-# from the project root
-cd src
-# if there's a Makefile
-make
-# or with setuptools extensions
-python setup.py build_ext --inplace
+Create a .env or other config file with your Africa's Talking credentials and any USSD gateway settings if used. Example variables:
+
+```
+AFRICASTALKING_USERNAME=your_username
+AFRICASTALKING_APIKEY=your_api_key
+USSD_GATEWAY_URL=https://example.com/ussd
 ```
 
-4. Frontend / Web (optional)
+Ensure sms.py reads these credentials from environment variables or a config file before running.
+
+## Usage
+
+- Run the main application (starts detection and notification handlers):
 
 ```bash
-cd frontend
-npm install
-# or specific packages
-npm install react react-dom
-npm start
+py main.py
 ```
 
-## Usage Examples
-
-- Preprocess data
+or
 
 ```bash
-python scripts/preprocess.py --input data/raw --output data/processed
+python main.py
 ```
 
-- Run an analysis pipeline
-
-```bash
-python scripts/run_analysis.py --config configs/analysis.yaml
-```
+Behavior summary:
+- The application monitors configured water-level inputs (sensors or feeds).
+- When thresholds/conditions are met, sms.py sends SMS alerts to subscribed users using Africa's Talking.
+- USSD interactions are retrieved and parsed to send different messages based on the user's chosen option.
 
 ## Testing
 
-Run tests with pytest:
+To run a local test of detection and notification flows, run:
 
 ```bash
-pytest -q
+py main.py
 ```
 
-## Configuration
-
-Store environment-specific settings in a config/ folder or .env file. Keep sensitive credentials out of the repo and document required keys in README or docs/.
+This will exercise the detection pipeline and the SMS/USSD notification handlers (use test credentials or mocks in development).
 
 ## Contributing
 
 Contributions welcome:
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Add tests for new behavior.
+1. Fork the repository.  
+2. Create a feature branch.  
+3. Add tests for new behavior.  
 4. Submit a pull request with a clear description.
 
 ## License
